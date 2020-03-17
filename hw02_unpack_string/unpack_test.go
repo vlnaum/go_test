@@ -54,6 +54,10 @@ func TestUnpack(t *testing.T) {
 			input:    "abcd0",
 			expected: "abc",
 		},
+		{
+			input:    "Те3ст",
+			expected: "Тееест",
+		},
 	} {
 		result, err := Unpack(tst.input)
 		require.Equal(t, tst.err, err)

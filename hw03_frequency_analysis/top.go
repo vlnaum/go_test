@@ -31,10 +31,6 @@ func Top10(s string) []string {
 	wordsCount := make(map[string]int)
 
 	for _, word := range words {
-		_, ok := wordsCount[word]
-		if !ok {
-			wordsCount[word] = 0
-		}
 		wordsCount[word]++
 	}
 

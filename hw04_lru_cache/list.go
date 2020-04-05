@@ -34,6 +34,7 @@ func (l list) Back() *listItem {
 
 func (l *list) PushFront(v interface{}) *listItem {
 	node := listItem{v, nil, nil}
+
 	if l.head == nil {
 		l.tail, l.head = &node, &node
 	} else {
@@ -41,12 +42,14 @@ func (l *list) PushFront(v interface{}) *listItem {
 		node.Prev.Next = &node
 		l.head = &node
 	}
+
 	l.count++
 	return &node
 }
 
 func (l *list) PushBack(v interface{}) *listItem {
 	node := listItem{v, nil, nil}
+
 	if l.head == nil {
 		l.tail, l.head = &node, &node
 	} else {
@@ -54,6 +57,7 @@ func (l *list) PushBack(v interface{}) *listItem {
 		node.Next.Prev = &node
 		l.tail = &node
 	}
+
 	l.count++
 	return &node
 }
@@ -87,6 +91,7 @@ func (l *list) MoveToFront(node *listItem) {
 		node.Next.Prev = node.Prev
 		node.Prev.Next = node.Next
 	}
+
 	node.Prev = l.head
 	node.Next = nil
 	l.head.Next = node

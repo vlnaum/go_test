@@ -1,5 +1,7 @@
 package hw04_lru_cache //nolint:golint,stylecheck
 
+import "sync"
+
 type Key string
 
 type Cache interface {
@@ -9,44 +11,60 @@ type Cache interface {
 }
 
 type lruCache struct {
-	Capacity int
-	Queue    List
-	Items    map[Key]*listItem
+	mu       sync.Mutex
+	capacity int
+	queue    List
+	items    map[Key]*listItem
 }
 
 type cacheItem struct {
-	Key
-	Value interface{}
+	key   Key
+	value interface{}
 }
 
 func (lc *lruCache) Set(key Key, value interface{}) bool {
-	if item, ok := lc.Items[key]; ok {
+	lc.mu.Lock()
+	defer lc.mu.Unlock()
+
+	if item, ok := lc.items[key]; ok {
 		item.Value = cacheItem{key, value}
-		lc.Queue.MoveToFront(item)
+		lc.queue.MoveToFront(item)
 		return true
 	}
-	if lc.Capacity == lc.Queue.Len() {
-		delete(lc.Items, lc.Queue.Back().Value.(cacheItem).Key)
-		lc.Queue.Remove(lc.Queue.Back())
+
+	if lc.capacity == lc.queue.Len() {
+		delete(lc.items, lc.queue.Back().Value.(cacheItem).key)
+		lc.queue.Remove(lc.queue.Back())
 	}
-	e := lc.Queue.PushFront(cacheItem{key, value})
-	lc.Items[key] = e
+
+	element := lc.queue.PushFront(cacheItem{key, value})
+	lc.items[key] = element
 	return false
 }
 
 func (lc *lruCache) Get(key Key) (interface{}, bool) {
-	if item, ok := lc.Items[key]; ok {
-		lc.Queue.MoveToFront(item)
-		return item.Value.(cacheItem).Value, true
+	lc.mu.Lock()
+	defer lc.mu.Unlock()
+
+	if item, ok := lc.items[key]; ok {
+		lc.queue.MoveToFront(item)
+		return item.Value.(cacheItem).value, true
 	}
+
 	return nil, false
 }
 
 func (lc *lruCache) Clear() {
-	lc.Queue = NewList()
-	lc.Items = make(map[Key]*listItem, lc.Capacity)
+	lc.mu.Lock()
+	defer lc.mu.Unlock()
+
+	lc.queue = NewList()
+	lc.items = make(map[Key]*listItem, lc.capacity)
 }
 
 func NewCache(capacity int) Cache {
-	return &lruCache{capacity, NewList(), make(map[Key]*listItem, capacity)}
+	return &lruCache{
+		capacity: capacity,
+		queue:    NewList(),
+		items:    make(map[Key]*listItem, capacity)}
 }

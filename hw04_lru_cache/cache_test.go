@@ -54,7 +54,6 @@ func TestCache(t *testing.T) {
 
 		for i := 0; i < 6; i++ {
 			c.Set(Key(strconv.Itoa(i)), i)
-			println(strconv.Itoa(i), i)
 		} //[5 4 3 2 1]
 
 		val, ok := c.Get("0")
@@ -64,6 +63,12 @@ func TestCache(t *testing.T) {
 		val, ok = c.Get("1") //[1 5 4 3 2]
 		require.True(t, ok)
 		require.Equal(t, 1, val)
+
+		c.Set("6", 6) //[6 1 5 4 3]
+
+		val, ok = c.Get("2")
+		require.False(t, ok)
+		require.Equal(t, nil, val)
 
 		c.Clear()
 

@@ -7,7 +7,7 @@ import (
 )
 
 // Change to true if needed
-var taskWithAsteriskIsCompleted = false
+var taskWithAsteriskIsCompleted = true
 
 var text = `Как видите, он  спускается  по  лестнице  вслед  за  своим
 	другом   Кристофером   Робином,   головой   вниз,  пересчитывая
@@ -56,5 +56,43 @@ func TestTop10(t *testing.T) {
 			expected := []string{"он", "и", "а", "что", "ты", "не", "если", "-", "то", "Кристофер"}
 			assert.ElementsMatch(t, expected, Top10(text))
 		}
+	})
+
+	t.Run("different languages", func(t *testing.T) {
+		expected := []string{"合気道", "test", "тест", "الاختبار", "թեստը", "测试", "測試", "δοκιμή", "ٹیسٹ", "tès"}
+		assert.Subset(t, expected, Top10(`Some words: 合気道 test тест الاختبار թեստը 测试 測試 δοκιμή ٹیسٹ tès 合気道 test тест الاختبار թեստը 测试 測試 δοκιμή ٹیسٹ परीक्षण tès`))
+	})
+
+	t.Run("dash test", func(t *testing.T) {
+		expected := []string{"вжух-вжух-вжух", "вжух-вжух", "test-test", "вжух"}
+		assert.Subset(t, expected, Top10(`- вжух-вжух-вжух вжух-вжух - вжух - test-test -`))
+	})
+
+	t.Run("special symbols", func(t *testing.T) {
+		assert.Len(t, Top10(`! @ # $ % ^ & * ( ) _ - + = , . / ? ; : ' { } [ ] | \ / ~`), 0)
+	})
+
+	t.Run("different count of words", func(t *testing.T) {
+		expected := []string{"а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и"}
+		assert.Subset(t, expected, Top10(`а а а а а б б б б в в в г г д е ё ж з и`))
+	})
+
+	t.Run("punctuation", func(t *testing.T) {
+		expected := []string{"а", "b", "c", "d", "e", "f", "g", "h", "i", "j"}
+		assert.Subset(t, expected, Top10(`!а!?b?,c,.d.;e;:f:"g"'h'[i]{j}`))
+	})
+
+	t.Run("letter case", func(t *testing.T) {
+		expected := []string{"q", "у"}
+		assert.Subset(t, expected, Top10(`Q q У у`))
+	})
+
+	t.Run("escape symbols", func(t *testing.T) {
+		expected := []string{"a", "b", "c", "d"}
+		assert.Subset(t, expected, Top10(" a \nb \tc \r\nd"))
+	})
+
+	t.Run("numbers", func(t *testing.T) {
+		assert.Len(t, Top10("123"), 0)
 	})
 }

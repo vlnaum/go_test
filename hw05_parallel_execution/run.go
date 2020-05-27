@@ -7,10 +7,14 @@ import (
 )
 
 var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
+var ErrIncorrectInput = errors.New("input is incorrect")
 
 type Task func() error
 
 func Run(tasks []Task, n int, m int) error {
+	if n <= 0 {
+		return ErrIncorrectInput
+	}
 	tasksCh := make(chan Task)
 	wg := &sync.WaitGroup{}
 	allowedErrors := int32(m)

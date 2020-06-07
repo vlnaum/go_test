@@ -40,7 +40,7 @@ func TestRunCmd(t *testing.T) {
 		require.True(t, ok)
 		require.Equal(t, "test0", var0)
 
-		_, ok := os.LookupEnv("VAR1")
+		_, ok = os.LookupEnv("VAR1")
 		require.False(t, ok)
 
 		var2, ok := os.LookupEnv("VAR2")

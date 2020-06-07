@@ -32,7 +32,7 @@ func TestReadDir(t *testing.T) {
 
 	t.Run("= in env name", func(t *testing.T) {
 		filePath := filepath.Join(tempDir, "=TEST=ENV=")
-		err := ioutil.WriteFile(filePath, "test")
+		err := ioutil.WriteFile(filePath, []byte("test"), 0777)
 		require.NoError(t, err)
 
 		defer os.Remove(filePath)

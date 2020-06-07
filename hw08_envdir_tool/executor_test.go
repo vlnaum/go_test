@@ -11,6 +11,9 @@ func TestRunCmd(t *testing.T) {
 	t.Run("execution of command without args returns error exit code", func(t *testing.T) {
 		exitCode := RunCmd(nil, nil)
 		require.Equal(t, 1, exitCode)
+
+		exitCode = RunCmd([]string{}, Environment{})
+		require.Equal(t, 1, exitCode)
 	})
 
 	t.Run("successfull execution of command returns exit code", func(t *testing.T) {

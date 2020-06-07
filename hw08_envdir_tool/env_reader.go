@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -28,7 +29,7 @@ func ReadDir(dir string) (Environment, error) {
 			return nil, err
 		}
 
-		env[fileName] = content
+		env[strings.ReplaceAll(fileInfo.Name(), "=", "")] = content
 	}
 
 	return env, nil
@@ -44,7 +45,7 @@ func getValueFromFile(filePath string) (string, error) {
 	reader := bufio.NewReader(file)
 
 	content, _, err := reader.ReadLine()
-	if err != nil {
+	if err != nil && err != io.EOF {
 		return "", err
 	}
 

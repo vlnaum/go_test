@@ -20,7 +20,7 @@ func TestReadDir(t *testing.T) {
 		env, err := ReadDir("testdata/env")
 		require.NoError(t, err)
 
-		expected := map[string]string{
+		expected := Environment{
 			"BAR":   "bar",
 			"FOO":   "   foo\nwith new line",
 			"HELLO": "\"Hello\"",
@@ -40,7 +40,7 @@ func TestReadDir(t *testing.T) {
 		env, err := ReadDir(tempDir)
 		require.NoError(t, err)
 
-		expected := map[string]string{
+		expected := Environment{
 			"TESTENV": "test",
 		}
 
@@ -50,7 +50,10 @@ func TestReadDir(t *testing.T) {
 	t.Run("empty directory", func(t *testing.T) {
 		env, err := ReadDir(tempDir)
 		require.NoError(t, err)
-		require.Nil(t, env)
+
+		expected := Environment{}
+
+		require.Equal(t, expected, env)
 	})
 
 	t.Run("directory is not exist", func(t *testing.T) {

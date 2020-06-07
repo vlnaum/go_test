@@ -43,11 +43,17 @@ func TestRunCmd(t *testing.T) {
 		require.Equal(t, "testValue", var2)
 	})
 
-	t.Run("successfull execution of command returns exit code", func(t *testing.T) {
-		command := []string{"bash", "exit 5"}
+	t.Run("execution of command returns success exit code", func(t *testing.T) {
+		command := []string{"ls", "testdata/env"}
 		exitCode := RunCmd(command, nil)
-		expectedexitCode := 5
 
-		require.Equal(t, expectedexitCode, exitCode)
+		require.Equal(t, exitCodeSuccess, exitCode)
+	})
+
+	t.Run("execution of command returns failure exit code from util", func(t *testing.T) {
+		command := []string{"ls", "testdata/env/notExist"}
+		exitCode := RunCmd(command, nil)
+
+		require.Equal(t, 2, exitCode)
 	})
 }

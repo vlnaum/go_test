@@ -10,18 +10,10 @@ import (
 func TestRunCmd(t *testing.T) {
 	t.Run("execution of command without args returns error exit code", func(t *testing.T) {
 		exitCode := RunCmd(nil, nil)
-		require.Equal(t, 1, exitCode)
+		require.Equal(t, exitCodeFailure, exitCode)
 
 		exitCode = RunCmd([]string{}, Environment{})
-		require.Equal(t, 1, exitCode)
-	})
-
-	t.Run("successfull execution of command returns exit code", func(t *testing.T) {
-		command := []string{"bash", "exit 5"}
-		result := RunCmd(command, nil)
-		expectedResult := 5
-
-		require.Equal(t, expectedResult, result)
+		require.Equal(t, exitCodeFailure, exitCode)
 	})
 
 	t.Run("env vars", func(t *testing.T) {
@@ -37,7 +29,7 @@ func TestRunCmd(t *testing.T) {
 		command := []string{"bash"}
 
 		exitCode := RunCmd(command, env)
-		require.Equal(t, 0, exitCode)
+		require.Equal(t, exitCodeSuccess, exitCode)
 
 		var0, ok := os.LookupEnv("VAR0")
 		require.True(t, ok)
@@ -49,5 +41,13 @@ func TestRunCmd(t *testing.T) {
 		var2, ok := os.LookupEnv("VAR2")
 		require.True(t, ok)
 		require.Equal(t, "testValue", var2)
+	})
+
+	t.Run("successfull execution of command returns exit code", func(t *testing.T) {
+		command := []string{"bash", "exit 5"}
+		exitCode := RunCmd(command, nil)
+		expectedexitCode := 5
+
+		require.Equal(t, expectedexitCode, exitCode)
 	})
 }

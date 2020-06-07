@@ -1,14 +1,18 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/exec"
 )
 
+const (
+	exitCodeSuccess = 0
+	exitCodeFailure = 1
+)
+
 func RunCmd(cmd []string, env Environment) (returnCode int) {
 	if len(cmd) == 0 {
-		log.Fatal("arguments weren't defined")
+		return exitCodeFailure
 	}
 
 	for k, v := range env {
@@ -33,8 +37,8 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 		if exitError, ok := err.(*exec.ExitError); ok {
 			return exitError.ExitCode()
 		}
-		log.Fatal(err)
+		return exitCodeFailure
 	}
 
-	return
+	return exitCodeSuccess
 }

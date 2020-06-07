@@ -23,7 +23,7 @@ func TestReadDir(t *testing.T) {
 		expected := Environment{
 			"BAR":   "bar",
 			"FOO":   "   foo\nwith new line",
-			"HELLO": "\"Hello\"",
+			"HELLO": "\"hello\"",
 			"UNSET": "",
 		}
 

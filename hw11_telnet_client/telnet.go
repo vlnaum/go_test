@@ -41,7 +41,7 @@ func (c *client) Receive() (err error) {
 	return
 }
 
-func NewTelnetClient(address string, timeout time.Duration, in io.ReadCloser, out io.Writer) TelnetClient {
+func NewTelnetClient(address string, timeout time.Duration, in io.ReadCloser, out io.Writer) TelnetClient { //nolint:interfacer
 	return &client{
 		address: address,
 		timeout: timeout,

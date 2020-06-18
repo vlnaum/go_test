@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -36,7 +37,7 @@ func main() {
 
 	sigCh := make(chan os.Signal, 1)
 	defer close(sigCh)
-	signal.Notify(sigCh, os.Interrupt)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
 		if err := client.Send(); err != nil {

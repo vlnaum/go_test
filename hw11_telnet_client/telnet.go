@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net"
 	"time"
@@ -32,11 +33,17 @@ func (c *client) Close() (err error) {
 }
 
 func (c *client) Send() (err error) {
+	if c.conn == nil {
+		return fmt.Errorf("tcp connection is nil")
+	}
 	_, err = io.Copy(c.conn, c.in)
 	return
 }
 
 func (c *client) Receive() (err error) {
+	if c.conn == nil {
+		return fmt.Errorf("tcp connection is nil")
+	}
 	_, err = io.Copy(c.out, c.conn)
 	return
 }

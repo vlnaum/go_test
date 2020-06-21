@@ -40,13 +40,13 @@ func main() {
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
-		if err := client.Send(); err != nil {
+		if err := client.Receive(); err != nil {
 			cancel()
 		}
 	}()
 
 	go func() {
-		if err := client.Receive(); err != nil {
+		if err := client.Send(); err != nil {
 			cancel()
 		}
 	}()

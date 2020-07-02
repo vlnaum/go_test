@@ -20,8 +20,8 @@ func init() {
 func main() {
 	flag.Parse()
 
-	host := flag.Arg(0)
-	port := flag.Arg(1)
+	host := os.Args[2]
+	port := os.Args[3]
 	if host == "" || port == "" {
 		log.Fatal("host or port were not defined")
 	}
@@ -33,11 +33,21 @@ func main() {
 
 	client := NewTelnetClient(net.JoinHostPort(host, port), timeout, os.Stdin, os.Stdout)
 
+	if err := client.Connect(); err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() {
+		if err = client.Close(); err != nil {
+			log.Fatalln(err)
+		}
+	}()
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	sigCh := make(chan os.Signal, 1)
 	defer close(sigCh)
-	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
 		if err := client.Receive(); err != nil {
@@ -54,6 +64,7 @@ func main() {
 	select {
 	case <-sigCh:
 		cancel()
+		signal.Stop(sigCh)
 		return
 	case <-ctx.Done():
 		return

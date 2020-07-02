@@ -10,8 +10,12 @@ sleep 1
 (echo -e "I\nam\nTELNET client\n" && cat 2>/dev/null) | ./go-telnet --timeout=5s localhost 4242 >/tmp/telnet.out &
 TL_PID=$!
 
+(echo -e "I\nam\nTELNET client\n" && cat 2>/dev/null) | ./go-telnet localhost 4242 >/tmp/telnet2.out &
+TL2_PID=$!
+
 sleep 5
 kill ${TL_PID} 2>/dev/null || true
+kill ${TL2_PID} 2>/dev/null || true
 kill ${NC_PID} 2>/dev/null || true
 
 function fileEquals() {

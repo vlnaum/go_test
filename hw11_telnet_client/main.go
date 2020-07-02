@@ -20,8 +20,8 @@ func init() {
 func main() {
 	flag.Parse()
 
-	host := os.Args[2]
-	port := os.Args[3]
+	host := flag.Args()[0]
+	port := flag.Args()[1]
 	if host == "" || port == "" {
 		log.Fatal("host or port were not defined")
 	}
@@ -47,7 +47,7 @@ func main() {
 
 	sigCh := make(chan os.Signal, 1)
 	defer close(sigCh)
-	signal.Notify(sigCh, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
 		if err := client.Receive(); err != nil {

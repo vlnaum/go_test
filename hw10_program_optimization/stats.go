@@ -11,13 +11,13 @@ import (
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 type User struct {
-	ID       int    
+	ID       int
 	Name     string
-	Username string 
+	Username string
 	Email    string
 	Phone    string
-	Password string 
-	Address  string 
+	Password string
+	Address  string
 }
 
 type DomainStat map[string]int
